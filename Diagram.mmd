@@ -1,0 +1,47 @@
+erDiagram
+    s[Subject] {
+        int subj_code PK
+        string name 
+        string department
+    }
+
+    r[Room] {
+        int Room_Id PK
+        string building 
+        int capacity
+        int exam_id FK
+    }
+
+    es[Exam_Slots] {
+        int Exam_Id PK 
+        string type "only (MID/END)" 
+        int subj_code FK
+        int sem
+        date date_of_exam
+        int No_Of_Students
+        int No_Of_Rooms
+        string conducted_by
+    }
+
+    f[Faculty] {
+        int fac_id PK
+        string name 
+        string cadre
+        string subj_taught
+        string staff_type
+    }
+
+    ed[Exam_Duty] {
+        int id fk 
+        int exam_id
+        int Room_Id FK
+        int fac_id FK
+        string type "(Invi/Reli/Squad)"
+
+    }
+
+    s ||..|{ es : has_exam
+    r}|..|| es : slots
+    ed}|..||r : in
+    ed||--||es : alloted
+    f||..|{ed : assigned  
