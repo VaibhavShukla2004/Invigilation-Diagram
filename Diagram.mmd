@@ -1,47 +1,76 @@
 erDiagram
-    s[Subject] {
-        int subj_code PK
-        string name 
-        string department
+   e["Exam"] {
+    int exam_id PK 
+    year acad_year
+    varchar exam_type "we need to manage end/mid thing"
+    int semester
+    varchar course_code FK 
+    date day_of_exam
+    int No_Of_Rooms
+    int No_Of_Invigilators
+    int No_Of_Students
+    int No_Of_Relievers
+    int No_Of_Squads
+    int Dept_Id FK
+    Date Creation_Date
+    varchar Created_By
     }
 
-    r[Room] {
-        int Room_Id PK
-        string building 
-        int capacity
-        int exam_id FK
+    d["Department"] {
+        int Dept_Id PK
+        varchar Dept_Name
     }
 
-    es[Exam_Slots] {
-        int Exam_Id PK 
-        string type "only (MID/END)" 
-        int subj_code FK
-        int sem
-        date date_of_exam
-        int No_Of_Students
-        int No_Of_Rooms
-        string conducted_by
+
+    c["Course"] {
+        varchar course_code PK
+        varchar course_name
+        int semester
     }
 
-    f[Faculty] {
-        int fac_id PK
-        string name 
-        string cadre
-        string subj_taught
-        string staff_type
+    es["Exam Slot"] {
+        int Slot_Id PK
+        int exam_id FK,PK
+        int staff_id
+        varchar duty_type 
     }
 
-    ed[Exam_Duty] {
-        int id fk 
-        int exam_id
-        int Room_Id FK
-        int fac_id FK
-        string type "(Invi/Reli/Squad)"
-
+    s["Staff"] {
+        int staff_id PK
+        int employee_id 
+        varchar staff_type 
+        varchar grade FK
+        varchar first_name
+        varchar last_name
+        int mobile_number
+        varchar email
+        varchar location
     }
 
-    s ||..|{ es : has_exam
-    r}|..|| es : slots
-    ed}|..||r : in
-    ed||--||es : alloted
-    f||..|{ed : assigned  
+    sd["Staff Duties"] {
+        int staff_duty_id PK
+        int staff_id FK
+        year acad_year FK
+        varchar exam_type FK
+        int duty_count
+    }
+
+    r["Role"] {
+        int role_id PK
+        varchar role_name
+    }
+
+    g["Grade"] {
+        varchar grade PK 
+        int grade_duties
+    }
+
+    e ||--|{ es : alloted
+    e }|..|| d : belongs
+    c ||..|{ e : has_exam
+    e }|..|{ sd : of_exam 
+    es }|..|| sd : assigned
+    s ||..o{ sd : duties
+    c }o..|{ s : teaches
+    s }|..o| g : grade_info
+    r }|..|{ s : staff_role
